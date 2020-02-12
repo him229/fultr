@@ -99,6 +99,7 @@ def filter_candidate(dataset, threshold=20):
 
 if __name__ == "__main__":
     root_directory = "../transformed_datasets/mslr"
+    noise_root_directory = "../transformed_datasets/mslr-noise-0.1"
     raw_directory = os.path.join(root_directory, "raw")
     train_raw_path = os.path.join(raw_directory, "train.txt")
     valid_raw_path = os.path.join(raw_directory, "vali.txt")
@@ -149,7 +150,7 @@ if __name__ == "__main__":
     serialize(valid_data, os.path.join(full_directory, "valid.pkl"))
     serialize(test_data, os.path.join(full_directory, "test.pkl"))
 
-    full_directory = os.path.join("../transformed_datasets/mslr-noise-0.1", "full")
+    full_directory = os.path.join(noise_root_directory, "full")
     if not os.path.exists(full_directory):
         os.mkdir(full_directory)
     serialize(train_data, os.path.join(full_directory, "train.pkl"))

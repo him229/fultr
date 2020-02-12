@@ -3,7 +3,6 @@ from utils import unserialize
 import matplotlib.pyplot as plt
 from evaluate import *
 from baseline import save_svmprop_train, save_svmprop_test, DatasetNormalizer, RankingDataset
-from plot import get_stat, plot_curve
 import os, shutil, time
 import matplotlib
 from distutils import file_util
