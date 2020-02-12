@@ -11,6 +11,7 @@ task_per_srun = 1
 parser = ArgumentParser()
 
 parser.add_argument("dataset", default="mslr")
+parser.add_argument("--root_directory", type=str)
 parser.add_argument("--train_folder", type=str, default="Train")
 parser.add_argument("--policy_folder", type=str, default="policy")
 parser.add_argument('--utility', action='store_true', default=False)
@@ -28,17 +29,6 @@ parser.add_argument("--depend", type=int, default=None)
 parser.add_argument("--memory_limit", type=int, default=3)
 add_bool_arg(parser, "gpu", default=True)
 args = parser.parse_args()
-
-sbatch_template = '''#!/bin/bash
-#SBATCH -J multi                      # Job name
-#SBATCH -o tmp/runner_%A_%a.out       # Name of stdout output log file (%j expands to jobID)
-#SBATCH -e tmp/runner_%A_%a.out       # Name of stderr output log file (%j expands to jobID)
-#SBATCH -n 4                                 # Total number of cores requested
-#SBATCH --partition=mpi-cpus
-#SBATCH --exclude=totient-cpu-[01-08]
-#SBATCH --mem={}G                          # Total amount of (real) memory requested (per node)
-#SBATCH -t 48:00:00                          # Time limit (hh:mm:ss)
-'''.format(task_per_srun * args.memory_limit)
 
 lambdas = eval(args.lambdas)
 train_sizes = eval(args.train_sizes)
@@ -119,7 +109,6 @@ else:
 arguments['gpu'] = args.gpu
 if args.gpu:
     arguments['batch_size'] = 64
-    sbatch_template += "\n#SBATCH --gres=gpu:1\n"
 else:
     arguments['batch_size'] = 4
     arguments['evaluate_interval'] *= 3
@@ -163,7 +152,7 @@ def generate_tasks(hyperparam_dict: dict, task_list, current_task):
 
 policy_dir = os.path.join(root_directory, args.policy_folder)
 if not os.path.exists(policy_dir):
-    os.mkdir(policy_dir)
+    os.makedirs(policy_dir)
 
 for train_size in train_sizes:
     for lamb in lambdas:
@@ -208,19 +197,9 @@ for i, task in enumerate(tasks):
     sub_id = i % task_per_srun
     serialize(task, os.path.join(args_directory, "{}_{}.json".format(srun_id, sub_id)), in_json=True)
 
-sbatch_file = "script/{}-{}.sbatch".format(task_name, stime)
+sbatch_file = "script/{}-{}.sh".format(task_name, stime)
 for i in range(task_per_srun):
-    sbatch_template += "python run_hyperparams.py \"[0.0]\" --args_file {}/${{SLURM_ARRAY_TASK_ID}}_{}.json &\n".format(
-        args_directory, i)
-sbatch_template += "wait\n"
-with open(sbatch_file, "w") as output:
-    output.write(sbatch_template)
-if len(tasks) > 0:
-    depend = ""
-    if args.depend is not None:
-        depend = "--depend=afterany:{}".format(args.depend)
-    command = "sbatch {} --array=0-{}%{} {}".format(depend, (len(tasks) - 1) // task_per_srun, num_sruns, sbatch_file)
-    print(command)
-    os.system(command)
-else:
-    print("No tasks to run")
+    for j in range(len(tasks) // task_per_srun):
+        command = "python run_hyperparams.py \"[0.0]\" --args_file {}/{}_{}.json &\n".format(
+        args_directory, j, i)
+        os.system(command)
