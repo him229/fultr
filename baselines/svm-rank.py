@@ -11,7 +11,6 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_directory", type=str)
 parser.add_argument("--train_folder", type=str, default="Train")
-parser.add_argument("--test_folder", type=str, default="Test")
 parser.add_argument("--normalize", action="store_true")
 parser.add_argument("--temp_dir", type=str)
 args = parser.parse_args()
@@ -20,11 +19,11 @@ data_directory = args.data_directory
 train_dir = os.path.join(data_directory, args.train_folder)
 test_dir = os.path.join(data_directory, args.test_folder)
 production_dir = os.path.join(data_directory, "production")
-svmprop_directory = "/home/zd224/code/svm_proprank"
+svmprop_directory = "../svm_proprank"
 learn_path = os.path.join(svmprop_directory, "svm_proprank_learn")
 classify_path = os.path.join(svmprop_directory, "svm_proprank_classify")
 
-svmrank_directory = "/home/zd224/code/svm_rank"
+svmrank_directory = "../svm_rank"
 full_learn_path = os.path.join(svmrank_directory, "svm_rank_learn")
 full_classify_path = os.path.join(svmrank_directory, "svm_rank_classify")
 
@@ -142,5 +141,5 @@ for to_weight in [True, False]:
 
 model_path = os.path.join(data_directory, args.train_folder, "model-full.dat")
 test_path = os.path.join(data_directory, args.train_folder, "test-full.dat")
-prediction_path = os.path.join(data_directory, args.test_folder, "predictions-test-full")
+prediction_path = os.path.join(data_directory, args.train_folder, "predictions-test-full")
 os.system("{} {} {} {} >> /dev/null".format(full_classify_path, test_path, model_path, prediction_path))

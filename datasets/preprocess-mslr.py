@@ -1,17 +1,18 @@
 import numpy as np
 from distutils import file_util, dir_util
 import shutil
-from tqdm import tqdm_notebook
+from tqdm import tqdm
 import os
 import random
 import math
 from sklearn.preprocessing import RobustScaler
-from ..utils import serialize, unserialize, read_rank_dataset
+from utils import serialize, unserialize
+from baseline import read_rank_dataset
 
 
 def build_dataset(path, feature_num=None):
     features, rels = {}, {}
-    for label, qid, feature, cost in tqdm_notebook(read_rank_dataset(path)):
+    for label, qid, feature, cost in tqdm(read_rank_dataset(path)):
         if qid not in features:
             features[qid] = []
             rels[qid] = []

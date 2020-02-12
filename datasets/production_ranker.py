@@ -1,7 +1,7 @@
 import numpy as np
 from utils import unserialize, serialize
-from ..baselines.evaluate import *
-from ..baselines.baseline import save_svmprop_train, DatasetNormalizer, RankingDataset
+from baselines.evaluate import *
+from baselines.baseline import save_svmprop_train, DatasetNormalizer, RankingDataset
 import os, random
 import argparse
 

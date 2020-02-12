@@ -21,6 +21,7 @@ parser.add_argument("--group_feat_threshold", type=float, default=None)
 parser.add_argument("--output_dir", type=str)
 parser.add_argument("--true_merit", action='store_true', default=False)
 
+
 def ideal_dcg(predicted_merit):
     predicted_merit = torch.sort(predicted_merit, descending=True)[0]
     log_weight = (torch.arange(len(predicted_merit), dtype=torch.float) + 2).log2()
@@ -128,4 +129,5 @@ if __name__ == "__main__":
             "disp3": [group_disparity ** 2, group_disparity]
         }
     }
-    serialize(results, os.path.join(args.output_dir, "plt_data_pl_{}.json".format(time.strftime("%m-%d-%H-%M"))), in_json=True)
+    serialize(results, os.path.join(args.output_dir, "plt_data_pl_{}.json".format(time.strftime("%m-%d-%H-%M"))),
+              in_json=True)

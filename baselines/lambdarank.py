@@ -11,6 +11,7 @@ from baseline import RankingDataset, save_svmprop_train
 
 metric_name = "DCG"
 
+
 def activation_method(name):
     """
     :param name: (str)
@@ -91,7 +92,7 @@ class LambdaRank(nn.Module):
         score_diffs = doc_scores[:, :rel_num].unsqueeze(-1) - doc_scores[:, rel_num:].unsqueeze(1)
         exped = 1 / (1 + score_diffs.exp())
         dcg_diffs = (1 / (1 + doc_ranks[:, :rel_num]).log2()).unsqueeze(-1) - (
-            1 / (1 + doc_ranks[:, rel_num:]).log2()).unsqueeze(1)
+                1 / (1 + doc_ranks[:, rel_num:]).log2()).unsqueeze(1)
         lamb_updates = exped * dcg_diffs.abs()
         lambs = torch.zeros(batch_size, doc_num, device=doc_scores.device)
         lambs[:, :rel_num] -= lamb_updates.sum(dim=2)
@@ -269,7 +270,8 @@ def main():
                     test_dataloader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch_size)
                     test_dcg = validate(model, test_dataloader,
                                         output_path=os.path.join(args.output_dir,
-                                                                 "prediction-{}.txt".format(args.comment)), metric=metric_name)
+                                                                 "prediction-{}.txt".format(args.comment)),
+                                        metric=metric_name)
                     print("Lr: {}, Weight decay: {}, Test {}: {:.3f}".format(lr, weight_decay, metric_name, test_dcg))
                     torch.save(model.state_dict(), os.path.join(args.output_dir, "state_dict-{}".format(args.comment)))
         print("The best hyperparameters are lr {} and weight decay {}, best test {} {} ".format(best_parameters[0],
