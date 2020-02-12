@@ -42,6 +42,20 @@ def add_bool_arg(parser, name, default=False):
     parser.set_defaults(**{name: default})
 
 
+def read_rank_dataset(path):
+    with open(path) as file:
+        for line in file:
+            label, line = line.strip().split(' ', maxsplit=1)
+            label = float(label)
+            line = dict(list(map(lambda x: x.split(':'), line.split())))
+            qid = int(line['qid'])
+            features = {int(idx): float(value) for idx, value in line.items() if idx.isdigit()}
+            cost = 1.0
+            if 'cost' in line:
+                cost = float(line['cost'])
+            yield label, qid, features, cost
+
+
 def transform_dataset(data, use_gpu, weighted):
     feats, rels = data
     feats, rels = torch.as_tensor(feats, dtype=torch.float), torch.as_tensor(rels, dtype=torch.float)
