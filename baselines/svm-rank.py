@@ -1,10 +1,9 @@
 import numpy as np
 from utils import unserialize
-import matplotlib.pyplot as plt
 from evaluate import *
 from baseline import save_svmprop_train, save_svmprop_test, DatasetNormalizer, RankingDataset
 import os, shutil, time
-import matplotlib
+from plot import get_stat
 from distutils import file_util
 import argparse
 

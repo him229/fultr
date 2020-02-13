@@ -15,7 +15,7 @@ train_sizes="'50','250','500','2k','5k','25k','50k','250k'"
 partial_size="5k"
 
 # Our method (linear model)
-python my_dispatcher.py ${dataset} --root_directory ${root_directory} --no-gpu --comment square --train_sizes "['full','${partial_size}'']"
+python my_dispatcher.py ${dataset} --root_directory ${root_directory} --no-gpu --comment square --train_sizes "['full','${partial_size}']"
 # Our method (MLP)
 python my_dispatcher.py ${dataset} --root_directory ${root_directory} --mlp --no-gpu --comment square --train_sizes "['full','${partial_size}']"
 
