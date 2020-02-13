@@ -200,6 +200,6 @@ for i, task in enumerate(tasks):
 sbatch_file = "script/{}-{}.sh".format(task_name, stime)
 for i in range(task_per_srun):
     for j in range(len(tasks) // task_per_srun):
-        command = "python run_hyperparams.py \"[0.0]\" --args_file {}/{}_{}.json &\n".format(
+        command = "python run_hyperparams.py \"[0.0]\" --args_file {}/{}_{}.json".format(
         args_directory, j, i)
         os.system(command)
