@@ -1,7 +1,7 @@
 import numpy as np
 from utils import unserialize, serialize
-from baselines.evaluate import *
-from baselines.baseline import save_svmprop_train, DatasetNormalizer, RankingDataset
+from evaluate import *
+from baseline import save_svmprop_train, DatasetNormalizer, RankingDataset
 import os, random
 import argparse
 
@@ -13,6 +13,8 @@ root_directory = "../transformed_datasets/{}".format(args.dataset)
 noise_root_directory = "../transformed_datasets/{}-noise-0.1".format(args.dataset)
 data_directory = os.path.join(root_directory, "full")
 production_directory = os.path.join(root_directory, "production")
+if not os.path.exists(production_directory):
+    os.mkdir(production_directory)
 svmrank_directory = "../svm_rank"
 learn_path = os.path.join(svmrank_directory, "svm_rank_learn")
 classify_path = os.path.join(svmrank_directory, "svm_rank_classify")
@@ -46,10 +48,10 @@ test_dataset = RankingDataset(test_data, normalizer=normalizer)
 save_svmprop_train(test_dataset, test_path, write_cost=False)
 
 model_path = os.path.join(production_directory, "model-full.dat")
-os.system("{} -c 1.0 {} {}".format(learn_path, full_train_path, model_path))
+os.system("{} -c 1.0 {} {} >> /dev/null".format(learn_path, full_train_path, model_path))
 test_path = os.path.join(production_directory, "train-full.dat")
 prediction_path = os.path.join(production_directory, "predictions-train-full")
-os.system("{} {} {} {}".format(classify_path, test_path, model_path, prediction_path))
+os.system("{} {} {} {} >> /dev/null".format(classify_path, test_path, model_path, prediction_path))
 evaluater = PartialEvaluater(test_path, prediction_path)
 print("{:10}: {:.3f}".format('MRR', evaluater.partial_evaluate(reciprocal_rank)))
 print("{:10}: {:.3f}".format("DCG", evaluater.partial_evaluate(dcg_rank)))
@@ -69,11 +71,11 @@ train_dataset = RankingDataset((X, y), normalizer=normalizer)
 save_svmprop_train(train_dataset, train_path, weighted=False)
 
 model_path = os.path.join(production_directory, "model-{}.dat".format(production_ratio))
-os.system("{} -c 1000.0 {} {}".format(learn_path, train_path, model_path))
+os.system("{} -c 1000.0 {} {} >> /dev/null".format(learn_path, train_path, model_path))
 
 # train set
 prediction_path = os.path.join(production_directory, "predictions-{}".format(production_ratio))
-os.system("{} {} {} {}".format(classify_path, full_train_path, model_path, prediction_path))
+os.system("{} {} {} {} >> /dev/null".format(classify_path, full_train_path, model_path, prediction_path))
 
 evaluater = PartialEvaluater(test_path, prediction_path)
 production_mrr = evaluater.partial_evaluate(reciprocal_rank)
@@ -84,13 +86,13 @@ test_raw_path = os.path.join(production_directory, "test.dat")
 valid_raw_path = os.path.join(production_directory, "valid.dat")
 
 prediction_train_path = os.path.join(production_directory, "predictions-{}-train".format(production_ratio))
-os.system("{} {} {} {}".format(classify_path, train_raw_path, model_path, prediction_train_path))
+os.system("{} {} {} {} >> /dev/null".format(classify_path, train_raw_path, model_path, prediction_train_path))
 
 prediction_test_path = os.path.join(production_directory, "predictions-{}-test".format(production_ratio))
-os.system("{} {} {} {}".format(classify_path, test_raw_path, model_path, prediction_test_path))
+os.system("{} {} {} {} >> /dev/null".format(classify_path, test_raw_path, model_path, prediction_test_path))
 
 prediction_valid_path = os.path.join(production_directory, "predictions-{}-valid".format(production_ratio))
-os.system("{} {} {} {}".format(classify_path, valid_raw_path, model_path, prediction_valid_path))
+os.system("{} {} {} {} >> /dev/null".format(classify_path, valid_raw_path, model_path, prediction_valid_path))
 
 train_data = unserialize(os.path.join(data_directory, "train.pkl"))
 valid_data = unserialize(os.path.join(data_directory, "valid.pkl"))
