@@ -8,8 +8,7 @@ from utils import unserialize
 matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['ps.fonttype'] = 42
 
-data_directory = "/home/zd224/data/relevance"
-svmrank_directory = "/home/zd224/code/svm_proprank"
+svmrank_directory = "../svm_proprank"
 learn_path = os.path.join(svmrank_directory, "svm_proprank_learn")
 classify_path = os.path.join(svmrank_directory, "svm_proprank_classify")
 
@@ -72,47 +71,3 @@ def validate_performance(aim_directory):
         return best_result
     else:
         return None
-
-
-if __name__ == "__main__":
-    # evaluate the full model on the full testset
-    test_path = os.path.join(data_directory, "Train", "test-full.dat")
-    prediction_path = os.path.join(data_directory, "Test", "predictions-test-full")
-    evaluater = PartialEvaluater(test_path, prediction_path, group_id=group_id)
-    full_performance = get_stat(evaluater)
-    print("Full performance: {}".format(full_performance))
-
-    train_range = ["1k", "5k", "10k", "50k", "100k", "500k", "1000k"]
-    train_performances = {}
-    group_id = 37
-
-    test_path = os.path.join(data_directory, "Train", "test-full.dat")
-    for to_weight in [True, False]:
-        weight_str = "weighted" if to_weight else "unweighted"
-        train_performances[weight_str] = []
-        for train_size in train_range:
-            stat = {}
-            prediction_path = os.path.join(data_directory, "Train", "predictions-test-{}-{}".format(
-                weight_str, train_size))
-            evaluater = PartialEvaluater(test_path, prediction_path, group_id=group_id)
-            stat = get_stat(evaluater)
-            stat["train_size"] = train_size
-            train_performances[weight_str].append(stat)
-
-    train_performances['lambda'] = []
-    for train_size in train_range:
-        stat = {}
-        prediction_path = os.path.join(data_directory, "lambdarank", "prediction-{}.txt".format(train_size))
-        test_path = os.path.join(data_directory, "lambdarank", "test-{}.txt".format(train_size))
-        evaluater = PartialEvaluater(test_path, prediction_path, group_id=group_id)
-        stat = get_stat(evaluater)
-        stat["train_size"] = train_size
-        train_performances['lambda'].append(stat)
-
-    plot_curve(train_performances, 'Avg. Rank', train_range, {'Full-info': full_performance['Avg. Rank']},
-               'avg_rank.pdf')
-    plot_curve(train_performances, 'DCG', train_range, {'Full-info': full_performance['DCG']}, 'dcg.pdf')
-    plot_curve(train_performances, 'disparity', train_range, {'Full-info': full_performance['disparity']},
-               'disparity.pdf')
-    plot_curve(train_performances, 'rel_exposure', train_range, {'Full-info': full_performance['rel_exposure']},
-               'rel_exposure.pdf')
