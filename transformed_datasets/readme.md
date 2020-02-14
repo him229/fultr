@@ -1,14 +1,18 @@
 # Transformed Datasets
 
-## German Credit
+## Download
 
-`german` - final transformed german credit dataset
+Due to their large size, please download the datasets that should be placed in this folder from <https://tx.ag/fultrTransformedDatasets>.
 
-`german-noise-0.1` - transformed german credit dataset with noise perturbation to be used for the noise experiments
+### German Credit
 
-## MSLR
+`german` - folder with final transformed german credit dataset
 
-`mslr` - final transformed mslr dataset
+`german-noise-0.1` - folder with transformed german credit dataset with noise perturbation to be used for the noise experiments
 
-`mslr-noise-0.1` - transformed mslr dataset with noise perturbation to be used for the noise experiments
+### MSLR
+
+`mslr` - folder with final transformed mslr dataset
+
+`mslr-noise-0.1` - folder with transformed mslr dataset with noise perturbation to be used for the noise experiments
 
