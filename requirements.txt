@@ -1,0 +1,6 @@
+matplotlib
+tqdm
+numpy
+gurobipy
+scikit_learn
+tensorboardX

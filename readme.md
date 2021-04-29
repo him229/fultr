@@ -1,8 +1,20 @@
-# FULTR
+# FULTR: Policy-Gradient Training of Fair and Unbiased Ranking Functions
 
-Paper: Learning Fair Ranking Policies from Biased Feedback
+The implementation for SIGIR 2021 paper ([arxiv](https://arxiv.org/pdf/1911.08054.pdf)):  
 
-Code has been implemented in `python 3.7` and uses `pytorch` for training.
+Policy-Gradient Training of Fair and Unbiased Ranking Functions
+
+Himank Yadav*, Zhengxiao Du*, Thorsten Joachims (*: equal contribution)
+
+
+
+## Installation
+Clone the repo
+```shell
+git clone https://github.com/him229/fultr
+cd fultr
+```
+Please first install PyTorch, and then install other dependencies by
 
 ## Getting Started
 
