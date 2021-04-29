@@ -15,7 +15,9 @@ git clone https://github.com/him229/fultr
 cd fultr
 ```
 Please first install PyTorch, and then install other dependencies by
-
+```shell
+pip install -r requirements.txt
+```
 ## Getting Started
 
 Script `main.sh` contains commands for running various experiments in the paper.
