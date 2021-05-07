@@ -8,6 +8,7 @@ import math
 from sklearn.preprocessing import RobustScaler
 from utils import serialize, unserialize
 from baseline import read_rank_dataset
+import argparse
 
 
 def build_dataset(path, feature_num=None):
@@ -99,8 +100,17 @@ def filter_candidate(dataset, threshold=20):
 
 
 if __name__ == "__main__":
-    root_directory = "../transformed_datasets/mslr"
-    noise_root_directory = "../transformed_datasets/mslr-noise-0.1"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--raw_directory", default=None)
+    parser.add_argument("--output_directory", default=None)
+    parser.add_argument("--no_log_features", action='store_true')
+    args = parser.parse_args()
+    if args.output_directory is None:
+        root_directory = "../transformed_datasets/mslr"
+        noise_root_directory = "../transformed_datasets/mslr-noise-0.1"
+    else:
+        root_directory = os.path.join(args.output_directory, "normal")
+        noise_root_directory = os.path.join(args.output_directory, "noise")
     raw_directory = os.path.join(root_directory, "raw")
     train_raw_path = os.path.join(raw_directory, "train.txt")
     valid_raw_path = os.path.join(raw_directory, "vali.txt")
@@ -120,8 +130,10 @@ if __name__ == "__main__":
     test_data = transform_binary(test_data)
     test_data = filter_relevance(test_data)
     print(len(test_data[0]))
-
-    log_features = [10, 11, 12, 13, 14, 40, 41, 42, 43, 44, 90, 91, 92, 93, 94, 127, 133, 134, 135]
+    if args.no_log_features:
+        log_features = []
+    else:
+        log_features = [10, 11, 12, 13, 14, 40, 41, 42, 43, 44, 90, 91, 92, 93, 94, 127, 133, 134, 135]
 
     train_data = take_absolute(train_data, 127)
     train_data = transform_log_features(train_data, log_features)

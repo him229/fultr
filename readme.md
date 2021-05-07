@@ -14,13 +14,13 @@ Clone the repo
 git clone https://github.com/him229/fultr
 cd fultr
 ```
-Please first install PyTorch, and then install other dependencies by
+Please first install [PyTorch](https://pytorch.org/), and then install other dependencies by
 ```shell
 pip install -r requirements.txt
 ```
 ## Getting Started
 
-Script `main.sh` contains commands for running various experiments in the paper.
+Script `main.sh` contains commands for running various experiments (based on slurm) in the paper.
 
 ## Data
 
@@ -36,7 +36,7 @@ We use MSLR and German Credit Datasets for training. They can be found online us
 
 ## Preprocess
 
-To reproduce the preprocessing process, please download the raw datasets and save files in `transformed_datasets/german/raw` and `transformed_datasets/mslr/raw` respectively.
+To reproduce the preprocessing process, please download the raw datasets and save files in `transformed_datasets/german/raw` and `transformed_datasets/mslr/raw` respectively. (All of the commands should be executed under the `datasets` directory.)
 
 ### German Credit Dataset
 
@@ -58,6 +58,12 @@ Group attribute - QualityScore (feature id 133) with 40th percentile as the thre
 python preprocess-mslr.py
 ```
 
+### Using You Own Dataset
+First save your dataset into the same format as [MSLR](https://www.microsoft.com/en-us/research/project/mslr), then run the following command:
+```shell
+python preprocess-mslr.py --raw_directory <data directory> --output_directory <output directory> --no_log_features
+```
+
 ### Click Data
 
 We first train a conventional Ranking SVM with 1 percent of the full-information training data as the logging policy. This logging policy is then used to generate the rankings for which click data is logged.
@@ -71,4 +77,8 @@ Then run the following commands:
 ```shell script
 python production_ranker.py --dataset german
 python production_ranker.py --dataset mslr
+```
+when using your own dataset
+```shell
+python production_ranker.py --dataset mslr --data_directory <output directory for previous preprocessing>
 ```

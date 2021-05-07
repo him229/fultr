@@ -7,10 +7,15 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str)
+parser.add_argument("--data_directory", default=None)
 args = parser.parse_args()
 
-root_directory = "../transformed_datasets/{}".format(args.dataset)
-noise_root_directory = "../transformed_datasets/{}-noise-0.1".format(args.dataset)
+if args.data_directory is None:
+    root_directory = "../transformed_datasets/{}".format(args.dataset)
+    noise_root_directory = "../transformed_datasets/{}-noise-0.1".format(args.dataset)
+else:
+    root_directory = os.path.join(args.data_directory, "normal")
+    noise_root_directory = os.path.join(args.data_directory, "noise")
 data_directory = os.path.join(root_directory, "full")
 production_directory = os.path.join(root_directory, "production")
 if not os.path.exists(production_directory):
